@@ -1,4 +1,4 @@
-# 👮‍♂️ Informações de segurança públicas do estado do Rio de Janeiro :police_car:
+# 👮‍♂️ Informações de Segurança Pública do Estado do Rio de Janeiro :police_car:
 Dados Abertos do Instituto de segurança pública (ISP)
 <p align="left">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=RED&style=for-the-badge" #vitrinedev/>  
