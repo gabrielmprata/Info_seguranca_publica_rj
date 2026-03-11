@@ -9,7 +9,7 @@ Dados Abertos do Instituto de segurança pública (ISP)
 <br></br>
 # :floppy_disk: Coleta de Dados
 >
-Os dados foram coletados do sítio do Instituto de segurança pública (ISP).
+Os dados foram coletados do sítio do Instituto de segurança pública (ISP), no dia **01/03/2026**.
 <br>
 <img width="260" align="left" height="46" alt="image" src="https://github.com/user-attachments/assets/f4dee793-9320-4e7e-b483-5c9ff109bb03" />
 <br><br>
