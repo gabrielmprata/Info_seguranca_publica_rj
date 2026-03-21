@@ -13,6 +13,8 @@ Criar um simples Dashboard em **Python** e **Streamlit**, para a visualização 
 E apresentar analises dos principais indicadores de criminalidade e de atividade policial do estado no período de 2003 a 2025.
 >
 As informações contidas nesse estudo foram extraídas dos registros de ocorrências feitos nas delegacias do estado, com as vítimas.
+>
+Os dados apresentados nesse **estudo acadêmico**, tem o objetivo de desenvolver habilidades técnicas, utilizando **dados abertos**. 
 <br><br>
 
 # :floppy_disk: Coleta de Dados
