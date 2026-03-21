@@ -7,6 +7,12 @@ Dados Abertos do Instituto de segurança pública (ISP)
 </p>
 
 <br></br>
+# :radio_button: Objetivo 
+Criar um simples Dashboard em **Python** e **Streamlit**, para a visualização das informações de Segurança Pública do Estado do Rio de Janeiro.
+>
+E apresentar as informações de todos os registros de ocorrências feitos nas delegacias do estado, com as vítimas.
+<br><br>
+
 # :floppy_disk: Coleta de Dados
 >
 Os dados foram coletados do sítio do Instituto de segurança pública (ISP), no dia **01/03/2026**.
