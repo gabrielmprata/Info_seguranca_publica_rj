@@ -74,6 +74,20 @@ section[data-testid="stSidebar"] {
 
 #######################
 # Carregando dataset
+
+
+@st.cache_data
+def load_data():
+    return pd.read_csv("https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_anuario.csv.bz2", sep='|', encoding="Latin 1")
+
+
+# carrega dataset com as informacoes do anuario
+df_anuario = load_data()
+
+# carrega dataset com o historico anual dos principais indicadores
+df_hist_anual = pd.read_csv(
+    'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hist_anual.csv', sep=',')
+
 # carrega dataset com a comparacao ano a ano
 df_hs_compara = pd.read_csv(
     'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hs_compara.csv', sep=',')
@@ -90,7 +104,7 @@ df_hs_compara = pd.read_csv(
 # 4.3. Crimes contra a vida
 # 4.3.1 Letalidade Violenta
 
-
+# historico anual
 let = px.line(df_hs_compara, x='ano', y='letalidade_violenta', markers=True, text='letalidade_violenta',
               line_shape="spline", template="plotly_dark", title="Letalidade Violenta por Ano",
               labels=dict(
@@ -109,15 +123,56 @@ let2.update_yaxes(showticklabels=False, showgrid=False,
 let2.update_xaxes(showgrid=False, visible=False,
                   fixedrange=True, type="category", title=None)
 
+# Por mês
+letmes = px.line(df_anuario.groupby(['mes', 'mes_char'])['letalidade_violenta'].sum().reset_index(), x='mes_char', y=['letalidade_violenta'],
+                 markers=True, text='value', line_shape="spline", template="plotly_dark",
+                 title="Letalidade Violenta por mês", color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                 labels=dict(mes_char="Mês", value="Letalidade",
+                             variable="Letalidade")
+                 )
+letmes.update_xaxes(type="category", title=None)
+letmes.update_layout(showlegend=False)
+letmes.update_traces(line_width=2, textposition='top center')
 
-#######################
+##################################################################################
 # Dashboard Main Panel
 
 st.markdown("# Crimes contra a vida")
+st.markdown("## :blue[Resumo dos principais resultados]")
+
+with st.expander("Indicadores", expanded=True):
+
+    col = st.columns((1.6, 1.6), gap='medium')
+
+    with col[0]:
+        # Quadro com o total e a variação
+        st.markdown('### Letalidade Violenta')
+        st.metric(label="", value=str(
+            df_hs_compara.letalidade_violenta.values[22]), delta=str(df_hs_compara.var_letalidade_violenta.values[22]))
+
+    with col[1]:
+        st.markdown('### Vítimas média por dia')
+        st.metric(
+            label="", value=int(
+                (((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(
+                    0)
+            )
+        )
+
+
 st.markdown("## :blue[Letalidade Violenta]")
 with st.expander("Histórico por Ano", expanded=True):
     st.plotly_chart(let, use_container_width=True)
     st.plotly_chart(let2, use_container_width=True)
     st.markdown("""
         O indicador de Letalidade Violenta registrou, em 2025, 3.881 vítimas (um aumento de 1,9% em relação ao ano anterior).
+                """)
+    st.plotly_chart(letmes, use_container_width=True)
+    st.markdown("""
+                **Outubro** foi o mês com mais registros de letalidade violenta no estado no ano de 2025.
+                >
+                **Nota:** 
+                No dia 28/10, ocorreu uma operação policial nos complexos do Alemão e da Penha, onde 121 pessoas morreram e 113 foram presas.
+
+                De acordo com a Polícia Civil, dentre os 121 mortos, 4 eram policiais.
                 """)
