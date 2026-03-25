@@ -91,23 +91,15 @@ df_hs_compara = pd.read_csv(
 # 4.3.1 Letalidade Violenta
 
 
-let = px.line(df_hs_compara, x='ano', y='letalidade_violenta',
-              markers=True, text='letalidade_violenta',
-              # height=600, width=800, #altura x largura
-              line_shape="spline",
-              template="plotly_dark",
-              render_mode="svg",
-              title="Letalidade Violenta por Ano",
+let = px.line(df_hs_compara, x='ano', y='letalidade_violenta', markers=True, text='letalidade_violenta',
+              line_shape="spline", template="plotly_dark", title="Letalidade Violenta por Ano",
               labels=dict(
                   ano="Ano", letalidade_violenta="Letalidade Violenta(k)")
               )
-# se o type for date, vai respeitar o intervalo
 let.update_xaxes(type="category", title=None)
 let.update_traces(line_width=2, textposition='top center')
 
 let2 = px.bar(df_hs_compara, x="ano", y="var_letalidade_violenta", title="Diferença YxY(%)", template="plotly_dark", text_auto=True,
-              # height=300, width=1160,  #largura
-              # , hover_data=['ano', 'dif','var']
               labels=dict(ano="Ano", var_letalidade_violenta='Variação')
               )
 let2.update_traces(textangle=0, textfont_size=12, textposition='outside',
@@ -123,6 +115,9 @@ let2.update_xaxes(showgrid=False, visible=False,
 
 st.markdown("# Crimes contra a vida")
 st.markdown("## :blue[Letalidade Violenta]")
-with st.expander("Histórico", expanded=True):
+with st.expander("Histórico por Ano", expanded=True):
     st.plotly_chart(let, use_container_width=True)
     st.plotly_chart(let2, use_container_width=True)
+    st.markdown("""
+        O indicador de Letalidade Violenta registrou, em 2025, 3.881 vítimas (um aumento de 1,9% em relação ao ano anterior).
+                """)
