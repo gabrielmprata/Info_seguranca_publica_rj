@@ -28,7 +28,7 @@ st.markdown("""
 
 section[data-testid="stSidebar"] {
             width: 200px;
-        }            
+        }                    
 
 [data-testid="block-container"] {
     padding-left: 2rem;
@@ -44,7 +44,7 @@ section[data-testid="stSidebar"] {
 }
 
 [data-testid="stMetric"] {
-    background-color: #393939;
+    background-color: #4c60d6;
     text-align: center;
     padding: 15px 0;
 }
@@ -136,76 +136,76 @@ st.markdown("""
 st.markdown("## :blue[Resumo dos principais resultados]")
 
 with st.expander("Indicadores", expanded=True):
-
-    col = st.columns((1.6, 1.3, 1.3), gap='medium')
+    # 1.6, 1.3, 1.3
+    col = st.columns((2.1, 2.1, 2.1), gap='medium')
 
     with col[0]:
         #######################
         # Quadro com o total e a variação
         st.markdown('### Ocorrências')
         st.metric(label="", value=str(
-            df_hs_compara.total.values[22]), delta=str(df_hs_compara.var_total.values[22]))
+            df_hs_compara.total.values[22]), delta=str(df_hs_compara.var_total.values[22]), delta_color="inverse", border=True)
 
     with col[1]:
         st.markdown('### Letalidade Violenta')
         st.metric(label="", value=str(
-            (df_hs_compara.letalidade_violenta.values[22]).round(2)), delta=str(df_hs_compara.var_letalidade_violenta.values[22]))
+            (df_hs_compara.letalidade_violenta.values[22]).round(2)), delta=str(df_hs_compara.var_letalidade_violenta.values[22]), delta_color="inverse", border=True)
 
     with col[2]:
         st.markdown('### Homicídio doloso')
         st.metric(label="", value=str(
-            df_hs_compara.hom_doloso.values[22]), delta=str(df_hs_compara.var_hom_doloso.values[22]))
+            df_hs_compara.hom_doloso.values[22]), delta=str(df_hs_compara.var_hom_doloso.values[22]), delta_color="inverse", border=True)
 
-    col2 = st.columns((1.6, 1.3, 1.3), gap='medium')
+    col2 = st.columns((2.1, 2.1, 2.1), gap='medium')
 
     with col2[0]:
         st.markdown('### Roubos')
         st.metric(label="", value=str(
-            df_hs_compara.total_roubos.values[22]), delta=str(df_hs_compara.var_roubos.values[22]))
+            df_hs_compara.total_roubos.values[22]), delta=str(df_hs_compara.var_roubos.values[22]), delta_color="inverse", border=True)
 
     with col2[1]:
         st.markdown('### Roubo de rua')
         st.metric(label="", value=str(
-            df_hs_compara.roubo_rua.values[22]), delta=str(df_hs_compara.var_roubo_rua.values[22]))
+            df_hs_compara.roubo_rua.values[22]), delta=str(df_hs_compara.var_roubo_rua.values[22]), delta_color="inverse", border=True)
 
     with col2[2]:
         st.markdown('### Roubo Veículos')
         st.metric(label="", value=str(
-            df_hs_compara.roubo_veiculo.values[22]), delta=str(df_hs_compara.var_roubo_veiculo.values[22]))
+            df_hs_compara.roubo_veiculo.values[22]), delta=str(df_hs_compara.var_roubo_veiculo.values[22]), delta_color="inverse", border=True)
 
-    col3 = st.columns((1.6, 1.3, 1.3), gap='medium')
+    col3 = st.columns((2.1, 2.1, 2.1), gap='medium')
 
     with col3[0]:
         st.markdown('### Roubo de Carga')
         st.metric(label="", value=str(
-            df_hs_compara.roubo_carga.values[22]), delta=str(df_hs_compara.var_roubo_carga.values[22]))
+            df_hs_compara.roubo_carga.values[22]), delta=str(df_hs_compara.var_roubo_carga.values[22]), delta_color="inverse", border=True)
 
     with col3[1]:
         st.markdown('### Latrocínio')
         st.metric(label="", value=str(
-            df_hs_compara.latrocinio.values[22]), delta=str(df_hs_compara.var_latrocinio.values[22]))
+            df_hs_compara.latrocinio.values[22]), delta=str(df_hs_compara.var_latrocinio.values[22]), delta_color="inverse", border=True)
 
     with col3[2]:
         st.markdown('### Estelionato')
         st.metric(label="", value=str(
-            df_hs_compara.estelionato.values[22]), delta=str(df_hs_compara.var_estelionato.values[22]))
+            df_hs_compara.estelionato.values[22]), delta=str(df_hs_compara.var_estelionato.values[22]), delta_color="inverse", border=True)
 
-    col4 = st.columns((1.6, 1.3, 1.3), gap='medium')
+    col4 = st.columns((2.1, 2.1, 2.1), gap='medium')
 
     with col4[0]:
         st.markdown('### Morte por interv. Policial')
         st.metric(label="", value=str(
-            df_hs_compara.hom_por_interv_policial.values[22]), delta=str(df_hs_compara.var_hom_por_interv_policial.values[22]))
+            df_hs_compara.hom_por_interv_policial.values[22]), delta=str(df_hs_compara.var_hom_por_interv_policial.values[22]), delta_color="inverse", border=True)
 
     with col4[1]:
         st.markdown('### Policiais mortos em serviço')
         st.metric(label="", value=str(
-            df_hs_compara.pol_mortos_serv.values[22]), delta=str(df_hs_compara.var_pol_mortos_serv.values[22]))
+            df_hs_compara.pol_mortos_serv.values[22]), delta=str(df_hs_compara.var_pol_mortos_serv.values[22]), delta_color="inverse", border=True)
 
     with col4[2]:
         st.markdown('### Apreensão de drogas')
         st.metric(label="", value=str(
-            df_hs_compara.apreensao_drogas.values[22]), delta=str(df_hs_compara.var_apreensao_drogas.values[22]))
+            df_hs_compara.apreensao_drogas.values[22]), delta=str(df_hs_compara.var_apreensao_drogas.values[22]), border=True)
 
 
 st.markdown("""
