@@ -78,14 +78,6 @@ section[data-testid="stSidebar"] {
 #######################
 # Carregando dataset
 
-@st.cache_data
-def load_data():
-    return pd.read_csv("https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_anuario.csv.bz2", sep='|', encoding="Latin 1")
-
-
-# carrega dataset com as informacoes do anuario
-df_anuario = load_data()
-
 # carrega dataset com o historico anual dos principais indicadores
 df_hist_anual = pd.read_csv(
     'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hist_anual.csv', sep=',')
@@ -96,9 +88,7 @@ df_hs_compara = pd.read_csv(
 
 
 # Construção dos Datasets
-# 1. Histórico indicadores
-df_ind_anual = df_hist_anual[(df_hist_anual['ano'] >= 2024)].groupby('ano')[['total', 'letalidade_violenta', 'hom_doloso', 'lesao_corp_morte', 'latrocinio', 'feminicidio', 'hom_por_interv_policial', 'total_roubos',
-                                                                             'total_furtos', 'estelionato', 'apreensao_drogas', 'pol_militares_mortos_serv', 'pol_mortos_serv', 'roubo_carga', 'roubo_veiculo', 'roubo_rua', 'roubo_transeunte', 'roubo_celular']].apply(lambda x: x.sum()).reset_index()
+
 
 # 📈 Contrução dos gráficos 📊
 
