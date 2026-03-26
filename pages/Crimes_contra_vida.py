@@ -26,7 +26,7 @@ st.markdown("""
 
 section[data-testid="stSidebar"] {
             width: 200px;
-        }                    
+        }
 
 [data-testid="block-container"] {
     padding-left: 2rem;
@@ -69,9 +69,40 @@ section[data-testid="stSidebar"] {
     transform: translateX(-50%);
 }
 
+.stButton button {
+    background-color: #0e3558; /* Change background color */
+    color: #FFFFFF;            /* Change font color */
+    font-size: 16px;           /* Change font size */
+    font-weight: bold;         /* Change font weight */
+    border-radius: 25px;       /* Add rounded corners */
+    padding: 10px 20px;
+    border: none;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
+
+def toggle_expander():
+    st.session_state.summary = not st.session_state.summary
+
+
+def on_expander_change():
+    if st.session_state.summary:
+        st.toast("You opened the expander.")
+    else:
+        st.toast("You closed the expander.")
+
+
+def toggle_expander1():
+    st.session_state.summary1 = not st.session_state.summary1
+
+
+def on_expander_change1():
+    if st.session_state.summary1:
+        st.toast("You opened the expander.")
+    else:
+        st.toast("You closed the expander.")
 #######################
 # Carregando dataset
 
@@ -92,10 +123,17 @@ df_hist_anual = pd.read_csv(
 df_hs_compara = pd.read_csv(
     'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hs_compara.csv', sep=',')
 
-# Construção dos Datasets
-# 1. Histórico indicadores
+# Construção de listas para mini gráfico
 
-# 2. Satisfação Geral por Prestadora
+vlr_atual = (
+    ((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(0)
+
+vlr_delta = ((((df_hs_compara.letalidade_violenta.values[21])*1000)/365).round(
+    0))-((((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(0))
+
+
+vlr_delta_fem = (
+    df_hs_compara.feminicidio.values[21])-(df_hs_compara.feminicidio.values[22])
 
 
 #######################
@@ -134,24 +172,58 @@ letmes.update_xaxes(type="category", title=None)
 letmes.update_layout(showlegend=False)
 letmes.update_traces(line_width=2, textposition='top center')
 
+# 4.3.2 Homicídio doloso
+# por ano
+hom1 = px.line(df_hs_compara, x='ano', y='hom_doloso',
+               markers=True, text='hom_doloso',
+               # height=600, width=800, #altura x largura
+               line_shape="spline",
+               template="plotly_dark",
+               render_mode="svg",
+               title="Homicídio doloso por Ano",
+               labels=dict(ano="Ano", hom_doloso="Homicídio (k)")
+               )
+hom1.update_xaxes(type="category", title=None)
+hom1.update_traces(line_width=2, textposition='top center')
+
+
+hom2 = px.bar(df_hs_compara, x="ano", y="var_hom_doloso", title="Diferença YxY(%)", template="plotly_dark", text_auto=True,
+              # height=300, width=1160,  #largura
+              # , hover_data=['ano', 'dif','var']
+              labels=dict(ano="Ano", var_hom_doloso='Variação')
+              )
+hom2.update_traces(textangle=0, textfont_size=12, textposition='outside',
+                   cliponaxis=False, marker_color=df_hs_compara["color_hom"])
+hom2.update_yaxes(showticklabels=False, showgrid=False,
+                  visible=False, fixedrange=True)
+hom2.update_xaxes(showgrid=False, visible=False,
+                  fixedrange=True, type="category", title=None)
+
+# por mes
+hommes = px.line(df_anuario.groupby(['mes', 'mes_char'])['hom_doloso'].sum().reset_index(), x='mes_char', y=['hom_doloso'],
+                 markers=True, text='value',
+                 # height=600, width=800, #altura x largura
+                 line_shape="spline",
+                 template="plotly_dark",
+                 render_mode="svg",
+                 title="Homicídio doloso por mês",
+                 color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                 labels=dict(mes_char="Mês", value="Homicídio",
+                             variable="Homicídio")
+                 )
+# se o type for date, vai respeitar o intervalo
+hommes.update_xaxes(type="category", title=None)
+hommes.update_layout(showlegend=False)
+hommes.update_traces(line_width=2, textposition='top center')
+
 ##################################################################################
 # Dashboard Main Panel
 
-vlr_atual = (
-    ((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(0)
-
-vlr_delta = ((((df_hs_compara.letalidade_violenta.values[21])*1000)/365).round(
-    0))-((((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(0))
-
-
-vlr_delta_fem = (
-    df_hs_compara.feminicidio.values[21])-(df_hs_compara.feminicidio.values[22])
-
 
 st.markdown("# Crimes contra a vida")
-st.markdown("## :blue[Resumo dos principais resultados]")
+st.markdown("### :blue[Resumo dos principais resultados]")
 
-with st.expander("Indicadores    (click aqui para ver)", expanded=False):
+with st.expander("Indicadores    (click aqui para ver)", expanded=True, on_change=on_expander_change1, key="summary1"):
 
     col = st.columns((1.6, 1.6), gap='small')
 
@@ -206,7 +278,9 @@ with st.expander("Indicadores    (click aqui para ver)", expanded=False):
         st.metric(label="", value=int(
             df_hs_compara.pol_mortos_serv.values[22]), delta=str(df_hs_compara.var_pol_mortos_serv.values[22]), delta_color="inverse", border=True)
 
-st.markdown("## :blue[Letalidade Violenta]")
+    st.button("Recolher", key=1, on_click=toggle_expander1)
+
+st.markdown("### :blue[Letalidade Violenta]")
 with st.expander("Histórico por Ano", expanded=True):
     st.plotly_chart(let, use_container_width=True)
     st.plotly_chart(let2, use_container_width=True)
@@ -222,3 +296,19 @@ with st.expander("Histórico por Ano", expanded=True):
 
                 De acordo com a Polícia Civil, dentre os 121 mortos, 4 eram policiais.
                 """)
+
+st.markdown(
+    "#### :blue[Análise dos delitos que compõem a Letalidade Violenta]")
+st.markdown("### :blue[Homicídio doloso]")
+with st.expander("Analises", expanded=True, on_change=on_expander_change, key="summary"):
+    st.plotly_chart(hom1, use_container_width=True)
+    st.plotly_chart(hom2, use_container_width=True)
+    st.markdown("""Destacamos que o estado registrou 2.833 vítimas de **homicídio doloso**,
+                representando uma **queda de 2.48%**, menos setenta e duas vítimas se comparado com 2024.
+                """)
+
+    st.plotly_chart(hommes, use_container_width=True)
+    st.markdown("""
+                **Janeiro** foi o mês com mais registros de homicídio doloso no estado no ano de 2025.
+                """)
+    st.button("Recolher", key=2, on_click=toggle_expander)
