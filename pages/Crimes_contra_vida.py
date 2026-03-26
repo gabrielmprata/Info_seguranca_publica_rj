@@ -143,10 +143,15 @@ vlr_atual = (
 vlr_delta = ((((df_hs_compara.letalidade_violenta.values[21])*1000)/365).round(
     0))-((((df_hs_compara.letalidade_violenta.values[22])*1000)/365).round(0))
 
+
+vlr_delta_fem = (
+    df_hs_compara.feminicidio.values[21])-(df_hs_compara.feminicidio.values[22])
+
+
 st.markdown("# Crimes contra a vida")
 st.markdown("## :blue[Resumo dos principais resultados]")
 
-with st.expander("Indicadores", expanded=True):
+with st.expander("Indicadores    (click aqui para ver)", expanded=False):
 
     col = st.columns((1.6, 1.6), gap='small')
 
@@ -183,10 +188,23 @@ with st.expander("Indicadores", expanded=True):
             df_hs_compara.lesao_corp_morte.values[22]), delta=str(df_hs_compara.var_lesao.values[22]), delta_color="inverse", border=True)
 
     with col2[1]:
-        st.markdown('### Latrocínio')
+        st.markdown('### Morte por Intervenção de Agente do Estado')
         st.metric(label="", value=int(
-            df_hs_compara.latrocinio.values[22]), delta=str(df_hs_compara.var_latrocinio.values[22]), delta_color="inverse", border=True)
+            df_hs_compara.hom_por_interv_policial.values[22]), delta=str(df_hs_compara.var_hom_por_interv_policial.values[22]), delta_color="inverse", border=True)
 
+    col3 = st.columns((1.6, 1.6), gap='small')
+
+    with col3[0]:
+        # Quadro com o total e a variação
+        st.markdown(
+            '#### Feminicídios')
+        st.metric(label="", value=int(
+            df_hs_compara.feminicidio.values[22]), delta=int(vlr_delta_fem), delta_color="inverse", border=True)
+
+    with col3[1]:
+        st.markdown('### Policiais mortos em serviço')
+        st.metric(label="", value=int(
+            df_hs_compara.pol_mortos_serv.values[22]), delta=str(df_hs_compara.var_pol_mortos_serv.values[22]), delta_color="inverse", border=True)
 
 st.markdown("## :blue[Letalidade Violenta]")
 with st.expander("Histórico por Ano", expanded=True):
