@@ -5,6 +5,7 @@ import altair as alt
 # import webbrowser
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 # from streamlit.components.v1 import html
 
 #######################
@@ -135,8 +136,14 @@ vlr_delta = ((((df_hs_compara.letalidade_violenta.values[21])*1000)/365).round(
 vlr_delta_fem = (
     df_hs_compara.feminicidio.values[21])-(df_hs_compara.feminicidio.values[22])
 
+# Homicídio doloso por CISP
+df_homiciodio_un = (df_anuario.groupby(['risp_desc', 'cisp', 'unidade_territorial'])['hom_doloso'].sum().reset_index()
+                    ).sort_values(by='hom_doloso', ascending=False).head(10)
 
-#######################
+# Rank the 'Score' column in descending order
+df_homiciodio_un['Rank'] = df_homiciodio_un['hom_doloso'].rank(ascending=False)
+
+##############################################################################################
 # 📈 Contrução dos gráficos 📊
 
 # 4.3. Crimes contra a vida
@@ -215,6 +222,36 @@ hommes = px.line(df_anuario.groupby(['mes', 'mes_char'])['hom_doloso'].sum().res
 hommes.update_xaxes(type="category", title=None)
 hommes.update_layout(showlegend=False)
 hommes.update_traces(line_width=2, textposition='top center')
+
+# Homicídio doloso por RISP
+hom_risp = px.pie(df_anuario.groupby(['risp_desc'])['hom_doloso'].sum().reset_index(), values='hom_doloso', names='risp_desc',
+                  hole=0.5, template="plotly_dark", color_discrete_sequence=px.colors.sequential.Blues_r,
+                  labels=dict(hom_doloso="Homicídio", risp_desc="RISP")
+                  )
+
+hom_cisp = go.Figure(data=[go.Table(
+
+    header=dict(values=['Rank', 'RISP', 'Delagacia', 'Unidade Territorial', 'Total'],
+                fill_color='royalblue',
+                align='left'),
+    cells=dict(values=[df_homiciodio_un.Rank, df_homiciodio_un.risp_desc, df_homiciodio_un.cisp, df_homiciodio_un.unidade_territorial, df_homiciodio_un.hom_doloso],
+               fill_color='lightskyblue',
+               align='center',
+               font=dict(color='darkslategray', size=11)
+               ))
+], layout=go.Layout(template="plotly_dark"))
+
+# 4.3.3 Roubos seguido de morte (latrocínio)
+lat_ano = px.line(df_hist_anual.groupby(['ano'])['latrocinio'].sum().reset_index(), x='ano', y=['latrocinio'],
+                  markers=True, text='value', line_shape="spline", template="plotly_dark",
+                  title="Latrocínio", height=525, width=850,
+                  color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                  labels=dict(ano="Ano", value="Latrocínio",
+                              variable="Latrocínio")
+                  )
+lat_ano.update_xaxes(type="category", title=None)
+lat_ano.update_layout(showlegend=False)
+lat_ano.update_traces(line_width=2, textposition='top center')
 
 ##################################################################################
 # Dashboard Main Panel
@@ -311,4 +348,24 @@ with st.expander("Analises", expanded=True, on_change=on_expander_change, key="s
     st.markdown("""
                 **Janeiro** foi o mês com mais registros de homicídio doloso no estado no ano de 2025.
                 """)
+
+    st.markdown("### :blue[Por RISP]")
+    st.plotly_chart(hom_risp, use_container_width=True)
+    st.markdown("""
+                A **Baixada Fluminense** é a região que mais registrou homicídios, foram 779, correspondendo a 27.5% do Estado.
+                """)
+    st.markdown("### :blue[Homicídio por CISP e unidade territorial]")
+    st.plotly_chart(hom_cisp, use_container_width=True)
+    st.markdown("""
+                A delegacia que mais registrou homicídios, está localizada na Baixada Fluminense, e atende as localidades de:
+                >
+                Posse, Austin, Miguel Couto, Vila de Cava e Tinguá
+                """)
     st.button("Recolher", key=2, on_click=toggle_expander)
+
+st.markdown("### :blue[Latrocínio]")
+with st.expander("Analises", expanded=True):
+    st.plotly_chart(lat_ano, use_container_width=True)
+    st.markdown("""
+                Foram 77 vítimas de roubos seguido de morte (latrocínio) no estado, apresentando uma queda de 22 casos no número de vítimas em relação ao ano anterior.
+                """)
