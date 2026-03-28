@@ -208,17 +208,11 @@ hom2.update_xaxes(showgrid=False, visible=False,
 
 # por mes
 hommes = px.line(df_anuario.groupby(['mes', 'mes_char'])['hom_doloso'].sum().reset_index(), x='mes_char', y=['hom_doloso'],
-                 markers=True, text='value',
-                 # height=600, width=800, #altura x largura
-                 line_shape="spline",
-                 template="plotly_dark",
-                 render_mode="svg",
-                 title="Homicídio doloso por mês",
-                 color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                 markers=True, text='value', line_shape="spline", template="plotly_dark",
+                 title="Homicídio doloso por mês", color_discrete_sequence=px.colors.sequential.Blackbody_r,
                  labels=dict(mes_char="Mês", value="Homicídio",
                              variable="Homicídio")
                  )
-# se o type for date, vai respeitar o intervalo
 hommes.update_xaxes(type="category", title=None)
 hommes.update_layout(showlegend=False)
 hommes.update_traces(line_width=2, textposition='top center')
@@ -265,6 +259,42 @@ lat_mes.update_xaxes(type="category", title=None)
 lat_mes.update_layout(showlegend=False)
 lat_mes.update_traces(line_width=2, textposition='top center')
 
+# 4.3.4 Lesão corporal seguida de morte
+les_ano = px.line(df_hist_anual.groupby(['ano'])['lesao_corp_morte'].sum().reset_index(), x='ano', y=['lesao_corp_morte'],
+                  markers=True, text='value', line_shape="spline", template="plotly_dark",
+                  title="Lesão corporal seguida de morte por ano",
+                  height=525, width=850, color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                  labels=dict(ano="Ano", value="lesão corporal",
+                              variable="lesão corporal")
+                  )
+les_ano.update_xaxes(type="category", title=None)
+les_ano.update_layout(showlegend=False)
+les_ano.update_traces(line_width=2, textposition='top center')
+# Por mes
+les_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['lesao_corp_morte'].sum().reset_index(), x='mes_char', y=['lesao_corp_morte'],
+                  markers=True, text='value', line_shape="spline", template="plotly_dark",
+                  title="Lesão corporal seguida de morte por mês",
+                  color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                  labels=dict(mes_char="Mês", value="lesão corporal",
+                              variable="lesão corporal")
+                  )
+les_mes.update_xaxes(type="category", title=None)
+les_mes.update_layout(showlegend=False)
+les_mes.update_traces(line_width=2, textposition='top center')
+
+# 4.3.5 Mortes por Intervenção de Agente do Estado
+
+agente_ano = px.line(df_hist_anual.groupby(['ano'])['hom_por_interv_policial'].sum().reset_index(), x='ano', y=['hom_por_interv_policial'],
+                     markers=True, text='value', line_shape="spline", template="plotly_dark",
+                     title="Mortes por Intervenção de Agente do Estado por ano",
+                     height=525, width=850, color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                     labels=dict(ano="Ano", value="Mortes", variable="Mortes")
+                     )
+agente_ano.update_xaxes(type="category", title=None)
+agente_ano.update_layout(showlegend=False)
+agente_ano.update_traces(line_width=2, textposition='top center')
+
+##################################################################################
 ##################################################################################
 # Dashboard Main Panel
 
@@ -384,4 +414,22 @@ with st.expander("Analises", expanded=True):
     st.plotly_chart(lat_mes, use_container_width=True)
     st.markdown("""
                 No mês de dezembro foram registrados 13 casos, um aumento de 117% em relação ao mês anterior.
+                """)
+
+st.markdown("### :blue[Lesão corporal seguida de morte]")
+with st.expander("Analises", expanded=True):
+    st.plotly_chart(les_ano, use_container_width=True)
+    st.markdown("""
+                O crime de lesão corporal seguida de morte contabilizou 67 vítimas, 2 casos a menos em relacão ao ano anterior.
+                """)
+    st.plotly_chart(les_mes, use_container_width=True)
+    st.markdown("""
+                Os meses com mais casos foram Janeiro e Março, e no final do ano vemos uma queda de 67% nesse delito.
+                """)
+
+st.markdown("### :blue[Mortes por Intervenção de Agente do Estado]")
+with st.expander("Analises", expanded=True):
+    st.plotly_chart(agente_ano, use_container_width=True)
+    st.markdown("""
+                As Mortes por Intervenção de Agente do Estado subiram 13,4% (797 no total do ano) em relação a 2024, que havia registrado 703 vítimas.
                 """)
