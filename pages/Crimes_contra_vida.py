@@ -242,6 +242,7 @@ hom_cisp = go.Figure(data=[go.Table(
 ], layout=go.Layout(template="plotly_dark"))
 
 # 4.3.3 Roubos seguido de morte (latrocínio)
+# Por ano
 lat_ano = px.line(df_hist_anual.groupby(['ano'])['latrocinio'].sum().reset_index(), x='ano', y=['latrocinio'],
                   markers=True, text='value', line_shape="spline", template="plotly_dark",
                   title="Latrocínio", height=525, width=850,
@@ -252,6 +253,17 @@ lat_ano = px.line(df_hist_anual.groupby(['ano'])['latrocinio'].sum().reset_index
 lat_ano.update_xaxes(type="category", title=None)
 lat_ano.update_layout(showlegend=False)
 lat_ano.update_traces(line_width=2, textposition='top center')
+
+# Por mes
+lat_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['latrocinio'].sum().reset_index(), x='mes_char', y=['latrocinio'],
+                  markers=True, text='value', line_shape="spline", template="plotly_dark",
+                  title="Latrocínio por mês", color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                  labels=dict(mes_char="Mês", value="Latrocínio",
+                              variable="Latrocínio")
+                  )
+lat_mes.update_xaxes(type="category", title=None)
+lat_mes.update_layout(showlegend=False)
+lat_mes.update_traces(line_width=2, textposition='top center')
 
 ##################################################################################
 # Dashboard Main Panel
@@ -368,4 +380,8 @@ with st.expander("Analises", expanded=True):
     st.plotly_chart(lat_ano, use_container_width=True)
     st.markdown("""
                 Foram 77 vítimas de roubos seguido de morte (latrocínio) no estado, apresentando uma queda de 22 casos no número de vítimas em relação ao ano anterior.
+                """)
+    st.plotly_chart(lat_mes, use_container_width=True)
+    st.markdown("""
+                No mês de dezembro foram registrados 13 casos, um aumento de 117% em relação ao mês anterior.
                 """)
