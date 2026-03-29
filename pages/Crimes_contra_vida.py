@@ -143,6 +143,10 @@ df_homiciodio_un = (df_anuario.groupby(['risp_desc', 'cisp', 'unidade_territoria
 # Rank the 'Score' column in descending order
 df_homiciodio_un['Rank'] = df_homiciodio_un['hom_doloso'].rank(ascending=False)
 
+# Mortes por intervençao de agente do estado
+df_interv_un = (df_anuario.groupby(['risp_desc', 'cisp', 'unidade_territorial'])['hom_por_interv_policial'].sum().reset_index()
+                ).sort_values(by='hom_por_interv_policial', ascending=False).head(10)
+
 ##############################################################################################
 # 📈 Contrução dos gráficos 📊
 
@@ -305,6 +309,7 @@ agente_mes.update_xaxes(type="category", title=None)
 agente_mes.update_layout(showlegend=False)
 agente_mes.update_traces(line_width=2, textposition='top center')
 
+# grafico de calor
 agente_heat = px.density_heatmap(df_hist_anual.groupby(['ano', 'mes', 'mes_char'])['hom_por_interv_policial'].sum().reset_index().sort_values(['ano', 'mes'], ascending=[True, True]),
                                  x="mes_char", y="ano", z="hom_por_interv_policial",
                                  histfunc="sum", text_auto=True,
@@ -316,6 +321,19 @@ agente_heat = px.density_heatmap(df_hist_anual.groupby(['ano', 'mes', 'mes_char'
 agente_heat.layout['coloraxis']['colorbar']['title'] = 'Mortes'
 agente_heat.update_yaxes(type="category")
 agente_heat.update_xaxes(type="category")
+
+# Por CISP
+agente_tb = go.Figure(data=[go.Table(
+
+    header=dict(values=['RISP', 'Delagacia', 'Unidade Territorial', 'Total'],
+                fill_color='royalblue',
+                align='left'),
+    cells=dict(values=[df_interv_un.risp_desc, df_interv_un.cisp, df_interv_un.unidade_territorial, df_interv_un.hom_por_interv_policial],
+               fill_color='lightskyblue',
+               align='center',
+               font=dict(color='darkslategray', size=11)
+               ))
+], layout=go.Layout(template="plotly_dark"))
 
 ##################################################################################
 ##################################################################################
@@ -471,3 +489,5 @@ with st.expander("Analises", expanded=True):
                 Julho foi o mês que mais acumulou mortes por intervenção de agentes do estado, 
                 somando **195 vítimas**, 50% maior do que o registrado no mesmo período do ano anterior.
                 """)
+    st.markdown(":blue[por CISP e unidade territorial]")
+    st.plotly_chart(agente_tb, use_container_width=True)
