@@ -335,6 +335,40 @@ agente_tb = go.Figure(data=[go.Table(
                ))
 ], layout=go.Layout(template="plotly_dark"))
 
+# 4.3.6 Vitimização policial
+vit_pol_ano = px.line(df_hist_anual.groupby(['ano'])['pol_mortos_serv'].sum().reset_index(), x='ano', y=['pol_mortos_serv'],
+                      markers=True, text='value', line_shape="spline", template="plotly_dark",
+                      title="Policiais mortos em serviço", height=525, width=850,
+                      color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                      labels=dict(ano="Ano", value="Mortes", variable="Mortes")
+                      )
+vit_pol_ano.update_xaxes(type="category", title=None)
+vit_pol_ano.update_layout(showlegend=False)
+vit_pol_ano.update_traces(line_width=2, textposition='top center')
+
+vit_pol_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['pol_mortos_serv'].sum().reset_index(), x='mes_char', y=['pol_mortos_serv'],
+                      markers=True, text='value', line_shape="spline", template="plotly_dark",
+                      title="Policiais mortos em serviço",
+                      color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                      labels=dict(mes_char="Mês", value="Mortes",
+                                  variable="Mortes")
+                      )
+vit_pol_mes.update_xaxes(type="category", title=None)
+vit_pol_mes.update_layout(showlegend=False)
+vit_pol_mes.update_traces(line_width=2, textposition='top center')
+
+vit_pol = px.bar(df_hist_anual.groupby('ano')[['pol_militares_mortos_serv', 'pol_civis_mortos_serv']].apply(lambda x: x.sum()).reset_index(),
+                 x="ano", y=['pol_militares_mortos_serv', 'pol_civis_mortos_serv'],
+                 labels=dict(pol_militares_mortos_serv="Polícial Militar",
+                             pol_civis_mortos_serv="Policial Civil", ano="Ano", value="Mortes", variable="Categoria"),
+                 color_discrete_sequence=px.colors.sequential.Blues_r,
+                 template="plotly_dark", text='value'
+                 )
+vit_pol.update_layout(legend=dict(yanchor="top", y=-0.15, xanchor="left", x=0))
+vit_pol.update_traces(textfont_size=12, textangle=0,
+                      textposition="outside", cliponaxis=False)
+vit_pol.update_xaxes(type="category", title=None)
+
 ##################################################################################
 ##################################################################################
 # Dashboard Main Panel
@@ -491,3 +525,14 @@ with st.expander("Analises", expanded=True):
                 """)
     st.markdown(":blue[por CISP e unidade territorial]")
     st.plotly_chart(agente_tb, use_container_width=True)
+
+st.markdown("### :blue[Vitimização policial]")
+with st.expander("Analises", expanded=True):
+    st.plotly_chart(vit_pol_ano, use_container_width=True)
+    st.markdown("""
+                Destacamos o aumento no número de policiais mortos que cresceu **58,3%** em comparação com o ano de 2024.
+                """)
+    st.plotly_chart(vit_pol_mes, use_container_width=True)
+    st.markdown(
+        " :blue[Considerando a separação entre Polícia Militar e Polícia Civil]")
+    st.plotly_chart(vit_pol, use_container_width=True)
