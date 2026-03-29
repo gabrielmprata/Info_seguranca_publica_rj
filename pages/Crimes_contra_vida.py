@@ -283,7 +283,7 @@ les_mes.update_layout(showlegend=False)
 les_mes.update_traces(line_width=2, textposition='top center')
 
 # 4.3.5 Mortes por Intervenção de Agente do Estado
-
+# Por ano
 agente_ano = px.line(df_hist_anual.groupby(['ano'])['hom_por_interv_policial'].sum().reset_index(), x='ano', y=['hom_por_interv_policial'],
                      markers=True, text='value', line_shape="spline", template="plotly_dark",
                      title="Mortes por Intervenção de Agente do Estado por ano",
@@ -293,6 +293,29 @@ agente_ano = px.line(df_hist_anual.groupby(['ano'])['hom_por_interv_policial'].s
 agente_ano.update_xaxes(type="category", title=None)
 agente_ano.update_layout(showlegend=False)
 agente_ano.update_traces(line_width=2, textposition='top center')
+# Poe mes
+agente_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['hom_por_interv_policial'].sum().reset_index(), x='mes_char', y=['hom_por_interv_policial'],
+                     markers=True, text='value', line_shape="spline", template="plotly_dark",
+                     title="Mortes por Intervenção de Agente do Estado por mês",
+                     color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                     labels=dict(mes_char="Mês", value="Mortes",
+                                 variable="Mortes")
+                     )
+agente_mes.update_xaxes(type="category", title=None)
+agente_mes.update_layout(showlegend=False)
+agente_mes.update_traces(line_width=2, textposition='top center')
+
+agente_heat = px.density_heatmap(df_hist_anual.groupby(['ano', 'mes', 'mes_char'])['hom_por_interv_policial'].sum().reset_index().sort_values(['ano', 'mes'], ascending=[True, True]),
+                                 x="mes_char", y="ano", z="hom_por_interv_policial",
+                                 histfunc="sum", text_auto=True,
+                                 labels=dict(mes_char="Mês",  ano="Ano",
+                                             hom_por_interv_policial="Mortes"),
+                                 color_continuous_scale="RdYlBu_r", template="plotly_dark"
+                                 )
+
+agente_heat.layout['coloraxis']['colorbar']['title'] = 'Mortes'
+agente_heat.update_yaxes(type="category")
+agente_heat.update_xaxes(type="category")
 
 ##################################################################################
 ##################################################################################
@@ -432,4 +455,19 @@ with st.expander("Analises", expanded=True):
     st.plotly_chart(agente_ano, use_container_width=True)
     st.markdown("""
                 As Mortes por Intervenção de Agente do Estado subiram 13,4% (797 no total do ano) em relação a 2024, que havia registrado 703 vítimas.
+                """)
+    st.plotly_chart(agente_mes, use_container_width=True)
+    st.markdown("""
+                No mês de **Outubro** foram registrados 175 casos desse delito, um aumento de 250% em relação ao mês anterior.
+                >
+                No dia 28/10/2025, ocorreu uma operação policial nos complexos do Alemão e da Penha, onde 121 pessoas morreram e 113 foram presas.
+                >
+                De acordo com a Polícia Civil, dentre os 121 mortos, 4 eram policiais.
+                """)
+    st.plotly_chart(agente_heat, use_container_width=True)
+    st.markdown("""
+                No No gráfico de calor, podemos verificar com mais clareza, os meses com mais casos ao longo dos anos.
+                2019 registrou o maior número de mortes por policiais no estado do Rio desde o início da série de dados. 
+                Julho foi o mês que mais acumulou mortes por intervenção de agentes do estado, 
+                somando **195 vítimas**, 50% maior do que o registrado no mesmo período do ano anterior.
                 """)
