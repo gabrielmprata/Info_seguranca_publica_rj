@@ -171,6 +171,66 @@ roubo_cisp = go.Figure(data=[go.Table(
                ))
 ], layout=go.Layout(template="plotly_dark"))
 
+# 4.4.2 Roubos de carga
+roubo_carga_ano = px.line(df_hist_anual.groupby('ano')[['roubo_carga']].apply(lambda x: x.sum()/1000).round(2).reset_index(),
+                          x='ano', y='roubo_carga', markers=True, text='roubo_carga', line_shape="spline", template="plotly_dark",
+                          title="Roubo de Carga", height=525, width=850,
+                          color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                          labels=dict(ano="Ano", roubo_carga="Roubos (k)")
+                          )
+roubo_carga_ano.update_xaxes(type="category", title=None)
+roubo_carga_ano.update_layout(showlegend=False)
+roubo_carga_ano.update_traces(line_width=2, textposition='top center')
+
+# 4.4.3 Roubos de veiculo
+roubo_veic_ano = px.line(df_hs_compara, x='ano', y='roubo_veiculo', title="Roubos de Veículos por Ano",
+                         markers=True, text='roubo_veiculo', line_shape="spline", template="plotly_dark",
+                         labels=dict(ano="Ano", roubo_veiculo="Roubos(k)")
+                         )
+roubo_veic_ano.update_layout(xaxis=dict(linecolor='rgba(0,0,0,1)', tickmode='array',
+                             tickvals=df_hs_compara['ano'], ticktext=df_hs_compara['ano']))
+roubo_veic_ano.update_xaxes(title=None)
+roubo_veic_ano.update_traces(line_width=2, textposition='top center')
+roubo_veic_ano.add_annotation(x=2020, y=25.42, font=dict(
+    color="red", size=12), text="Covid-19", showarrow=True, arrowhead=2, ax=-50, ay=0)
+
+
+roubo_veic_var = px.bar(df_hs_compara, x="ano", y="var_roubo_veiculo", title="Diferença YxY(%)", template="plotly_dark", text_auto=True,
+                        labels=dict(ano="Ano", var_roubo_veiculo='Variação')
+                        )
+roubo_veic_var.update_traces(textangle=0, textfont_size=12, textposition='outside',
+                             cliponaxis=False, marker_color=df_hs_compara["color_veic"])
+roubo_veic_var.update_yaxes(
+    showticklabels=False, showgrid=False, visible=False, fixedrange=True)
+roubo_veic_var.update_xaxes(
+    showgrid=False, visible=False, fixedrange=True, title=None)
+
+# 4.4.4 Roubo de Rua
+roubo_rua_ano = px.line(df_hs_compara, x='ano', y='roubo_rua', title="Roubos de Rua por Ano",
+                        markers=True, text='roubo_rua', line_shape="spline", template="plotly_dark",
+                        labels=dict(ano="Ano", roubo_veiculo="Roubos(k)")
+                        )
+roubo_rua_ano.update_layout(xaxis=dict(linecolor='rgba(0,0,0,1)', tickmode='array',
+                            tickvals=df_hs_compara['ano'], ticktext=df_hs_compara['ano']))
+roubo_rua_ano.update_xaxes(title=None)
+roubo_rua_ano.update_traces(line_width=2, textposition='top center')
+roubo_rua_ano.add_annotation(x=2020, y=71.95, font=dict(
+    color="red", size=12), text="Covid-19", showarrow=True, arrowhead=2, ax=-50, ay=0)
+
+
+roubo_rua_var = px.bar(df_hs_compara, x="ano", y="var_roubo_rua", title="Diferença YxY(%)", template="plotly_dark", text_auto=True,
+                       # height=300, width=1160,  #largura
+                       # , hover_data=['ano', 'dif','var']
+                       labels=dict(ano="Ano", roubo_rua='Variação')
+                       )
+roubo_rua_var.update_traces(textangle=0, textfont_size=12, textposition='outside',
+                            cliponaxis=False, marker_color=df_hs_compara["color_rua"])
+roubo_rua_var.update_yaxes(
+    showticklabels=False, showgrid=False, visible=False, fixedrange=True)
+roubo_rua_var.update_xaxes(
+    showgrid=False, visible=False, fixedrange=True, type="category", title=None)
+
+
 ##################################################################################
 ##################################################################################
 # Dashboard Main Panel
@@ -229,7 +289,7 @@ with st.expander("Indicadores    (click aqui para ver)", expanded=True):
             df_hs_compara.estelionato.values[22]), delta=str(df_hs_compara.var_estelionato.values[22]), delta_color="inverse", border=True)
 
 st.markdown("### :blue[Roubos]")
-with st.expander("Histórico por Ano", expanded=True):
+with st.expander("Analises", expanded=True):
     st.markdown("Esse indicador engloba **todos** os delitos de: roubo a transeunte, roubo de celular, roubo em coletivo, roubo de rua, roubo de veiculo, roubo de carga, roubo de comercio, roubo de residência, roubo de banco, roubo de caixa eletrônico, roubo condução saque roubo apos saque, roubo bicicleta e outros roubos.")
     st.plotly_chart(roubo_ano, use_container_width=True)
     st.plotly_chart(roubo_ano_var, use_container_width=True)
@@ -246,4 +306,37 @@ with st.expander("Histórico por Ano", expanded=True):
     st.plotly_chart(roubo_cisp, use_container_width=True)
     st.markdown("""
                 A delegacia com mais registros de roubos no estado, é a 59 DP, que atende a região de Duque de Caxias.
+                """)
+
+    st.markdown(
+        "### :blue[Análise dos delitos que compõem o indicador **Roubos**]")
+    st.markdown("#### :blue[Roubo de carga]")
+
+    st.plotly_chart(roubo_carga_ano, use_container_width=True)
+
+    st.markdown("""Em 2025, ocorreram **3.114 casos de Roubo de Carga**, representando uma diminuição de **9,4%** em relação ao ano anterior.
+                """)
+
+    st.markdown("#### :blue[Roubo de Veículo]")
+
+    st.plotly_chart(roubo_veic_ano, use_container_width=True)
+    st.plotly_chart(roubo_veic_var, use_container_width=True)
+    st.markdown("""
+                O ano de 2025 registrou uma queda de **18,4%** nos casos de **Roubo de Veículo**.
+                >
+                Observamos um aumento significativo nesses casos entre 2015 e 2017, seguido por uma queda brusca até 2020.
+                >
+                O número se manteve estável até 2022 e encerrou a série com uma nova queda observada em 2025.
+                """)
+
+    st.markdown("#### :blue[Roubo de Rua]")
+
+    st.plotly_chart(roubo_rua_ano, use_container_width=True)
+    st.plotly_chart(roubo_rua_var, use_container_width=True)
+    st.markdown("""
+                O indicador de Roubo de Rua vinha apresentando queda dos casos desde 2018.
+                >
+                Em 2023, registrou-se o menor número de ocorrências desde 2004.
+                >
+                Já em 2025, apresentou um **decréscimo de 2,7%** em relação ao ano anterior.
                 """)
