@@ -120,7 +120,25 @@ vlr_delta = ((((df_hs_compara.total_roubos.values[21])*1000)/365).round(
 # 4.4.1 Roubos
 
 # historico anual
+roubo_ano = px.line(df_hs_compara, x='ano', y='total_roubos', title="Roubos por Ano",
+                    markers=True, text='total_roubos', line_shape="spline", template="plotly_dark",
+                    labels=dict(ano="Ano", letalidade_violenta="Roubos(k)")
+                    )
+roubo_ano.update_xaxes(type="category", title=None)
+roubo_ano.update_traces(line_width=2, textposition='top center')
 
+
+roubo_ano_var = px.bar(df_hs_compara, x="ano", y="var_roubos", title="Diferença YxY(%)", template="plotly_dark", text_auto=True,
+                       # height=300, width=1160,  #largura
+                       # , hover_data=['ano', 'dif','var']
+                       labels=dict(ano="Ano", var_roubos='Variação')
+                       )
+roubo_ano_var.update_traces(textangle=0, textfont_size=12, textposition='outside',
+                            cliponaxis=False, marker_color=df_hs_compara["color_roubo"])
+roubo_ano_var.update_yaxes(
+    showticklabels=False, showgrid=False, visible=False, fixedrange=True)
+roubo_ano_var.update_xaxes(
+    showgrid=False, visible=False, fixedrange=True, type="category", title=None)
 
 ##################################################################################
 ##################################################################################
@@ -141,7 +159,7 @@ with st.expander("Indicadores    (click aqui para ver)", expanded=True):
     with col[1]:
         st.markdown('### Roubos média dia')
         st.metric(label="", value=int(vlr_atual),
-                  delta=int(vlr_delta), border=True)
+                  delta=int(vlr_delta), delta_color="inverse", border=True)
 
     col1 = st.columns((1.6, 1.6), gap='small')
 
@@ -179,10 +197,10 @@ with st.expander("Indicadores    (click aqui para ver)", expanded=True):
         st.metric(label="", value=int(
             df_hs_compara.estelionato.values[22]), delta=str(df_hs_compara.var_estelionato.values[22]), delta_color="inverse", border=True)
 
-st.markdown("### :blue[Letalidade Violenta]")
-# with st.expander("Histórico por Ano", expanded=True):
-#    st.plotly_chart(let, use_container_width=True)
-#    st.plotly_chart(let2, use_container_width=True)
-#    st.markdown("""
-#        O indicador de Letalidade Violenta registrou, em 2025, 3.881 vítimas (um aumento de 1,9% em relação ao ano anterior).
-#                """)
+st.markdown("### :blue[Roubos]")
+with st.expander("Histórico por Ano", expanded=True):
+    st.markdown("Esse indicador engloba **todos** os delitos de: roubo a transeunte, roubo de celular, roubo em coletivo, roubo de rua, roubo de veiculo, roubo de carga, roubo de comercio, roubo de residência, roubo de banco, roubo de caixa eletrônico, roubo condução saque roubo apos saque, roubo bicicleta e outros roubos.")
+    st.plotly_chart(roubo_ano, use_container_width=True)
+    st.plotly_chart(roubo_ano_var, use_container_width=True)
+    st.markdown("""O indicador de **Roubos** registrou, em 2025, 97.712 vítimas,  8.6% menor em relação ao ano anterior).
+                """)
