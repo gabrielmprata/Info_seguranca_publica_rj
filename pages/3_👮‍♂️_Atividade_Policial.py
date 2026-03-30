@@ -129,15 +129,39 @@ vlr_delta_apf = ((((df_hs_compara.apf.values[21])*1000)/365).round(
 apre_ano = px.line(df_hist_anual.groupby('ano')[['apreensao_drogas']].apply(lambda x: x.sum()/1000).round(1).reset_index(),
                    x='ano', y='apreensao_drogas',
                    markers=True, text='apreensao_drogas', line_shape="spline", template="plotly_dark",
-                   title="Apreensão de drogas",
-                   height=525, width=850,  # altura #largura
+                   title="Apreensão de drogas", height=525, width=850,
                    color_discrete_sequence=px.colors.sequential.Blackbody_r,
                    labels=dict(ano="Ano", apreensao_drogas="Apreensão (k)")
                    )
-# se o type for date, vai respeitar o intervalo
+
 apre_ano.update_xaxes(type="category", title=None)
 apre_ano.update_layout(showlegend=False)
 apre_ano.update_traces(line_width=2, textposition='top center')
+
+# 4.5.2 Prisão em flagrante
+apf_ano = px.line(df_hist_anual.groupby('ano')[['apf']].apply(lambda x: x.sum()/1000).round(1).reset_index(),
+                  x='ano', y='apf', markers=True, text='apf', line_shape="spline", template="plotly_dark",
+                  title="Prisões em flagrante", height=525, width=850,
+                  color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                  labels=dict(ano="Ano", apreensao_drogas="Prisões (k)")
+                  )
+
+apf_ano.update_xaxes(type="category", title=None)
+apf_ano.update_layout(showlegend=False)
+apf_ano.update_traces(line_width=2, textposition='top center')
+
+# 4.5.3 Auto de apreensão de adolescente por prática de ato infracional
+aaapai_ano = px.line(df_hist_anual.groupby('ano')[['aaapai']].apply(lambda x: x.sum()/1000).round(1).reset_index(),
+                     x='ano', y='aaapai',
+                     markers=True, text='aaapai', line_shape="spline", template="plotly_dark",
+                     title="Auto de apreensão de adolescente",
+                     height=525, width=850,  # altura #largura
+                     color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                     labels=dict(ano="Ano", aaapai="Autos (k)")
+                     )
+aaapai_ano.update_xaxes(type="category", title=None)
+aaapai_ano.update_layout(showlegend=False)
+aaapai_ano.update_traces(line_width=2, textposition='top center')
 
 ##################################################################################
 ##################################################################################
@@ -180,101 +204,22 @@ with st.expander("Indicadores    (click aqui para ver)", expanded=True):
             (df_hs_compara.aaapai.values[22]/1000).round(2)), delta=str(df_hs_compara.var_aaapai.values[22]), delta_color="inverse", border=True)
 
 
-st.markdown("### :blue[Roubos]")
-with st.expander("Analises", expanded=True):
-    st.markdown("Esse indicador engloba **todos** os delitos de: roubo a transeunte, roubo de celular, roubo em coletivo, roubo de rua, roubo de veiculo, roubo de carga, roubo de comercio, roubo de residência, roubo de banco, roubo de caixa eletrônico, roubo condução saque roubo apos saque, roubo bicicleta e outros roubos.")
-    st.plotly_chart(roubo_ano, use_container_width=True)
-    st.plotly_chart(roubo_ano_var, use_container_width=True)
-    st.markdown("""O indicador de **Roubos** registrou, em 2025, 97.712 vítimas,  8.6% menor em relação ao ano anterior).
-                """)
-    st.plotly_chart(roubo_mes, use_container_width=True)
-    st.markdown("""
-                O mês com mais registros de ocorrências de roubos, foram Janeiro e Dezembro.
-                >
-                Sendo que de Novembro para Dezembro tivemos um aumento de 22%.
+st.markdown("### :blue[Apreensão drogas]")
+st.plotly_chart(apre_ano, use_container_width=True)
+st.markdown("""As apreensões de drogas em 2025 tiveram um aumento de **7,9%** em relação ano anterior, mantendo a tendência de crescimento registrada nos últimos dois anos.
                 """)
 
-    st.markdown("#### :blue[Roubos por CISP e unidade territorial]")
-    st.plotly_chart(roubo_cisp, use_container_width=True)
-    st.markdown("""
-                A delegacia com mais registros de roubos no estado, é a 59 DP, que atende a região de Duque de Caxias.
-                """)
-
-    st.markdown(
-        "### :blue[Análise dos delitos que compõem o indicador **Roubos**]")
-    st.markdown("#### :blue[Roubo de carga]")
-
-    st.plotly_chart(roubo_carga_ano, use_container_width=True)
-
-    st.markdown("""Em 2025, ocorreram **3.114 casos de Roubo de Carga**, representando uma diminuição de **9,4%** em relação ao ano anterior.
-                """)
-
-    st.markdown("#### :blue[Roubo de Veículo]")
-
-    st.plotly_chart(roubo_veic_ano, use_container_width=True)
-    st.plotly_chart(roubo_veic_var, use_container_width=True)
-    st.markdown("""
-                O ano de 2025 registrou uma queda de **18,4%** nos casos de **Roubo de Veículo**.
-                >
-                Observamos um aumento significativo nesses casos entre 2015 e 2017, seguido por uma queda brusca até 2020.
-                >
-                O número se manteve estável até 2022 e encerrou a série com uma nova queda observada em 2025.
-                """)
-
-    st.markdown("#### :blue[Roubo de Rua]")
-
-    st.plotly_chart(roubo_rua_ano, use_container_width=True)
-    st.plotly_chart(roubo_rua_var, use_container_width=True)
-    st.markdown("""
-                O indicador de Roubo de Rua vinha apresentando queda dos casos desde 2018.
-                >
-                Em 2023, registrou-se o menor número de ocorrências desde 2004.
-                >
-                Já em 2025, apresentou um **decréscimo de 2,7%** em relação ao ano anterior.
-                """)
-
-    st.markdown("#### :blue[Roubo a transeunte]")
-
-    st.plotly_chart(rtranseunte_ano, use_container_width=True)
-
-    st.markdown("""
-                Em 2025, o roubo a transeunte registrou **queda de 10,6%** casos, mantendo a tendência observada nos últimos anos.
-                """)
-
-    st.markdown("#### :blue[Roubo de celular]")
-
-    st.plotly_chart(roubo_celular_ano, use_container_width=True)
-    st.markdown("""
-                Desde 2013, esse delito apresentava um crescimento constante, interrompido em 2020.
-                >
-                Ao final da pandemia, observamos uma queda nos números nos anos seguintes, mas, em 2024, os dados apresentaram nova crescente.
-                >
-                Em 2025, foram registrados **25.625** casos de **roubo de celular**, representando um aumento de **19,7%** em comparação com o ano anterior.
-                """)
-    st.plotly_chart(roubo_celular_mes, use_container_width=True)
-    st.markdown("""
-                No mês de março foram registrados **2.469** roubo de celulares, pois nesse mês temos a celebração do carnaval no estado.
-                """)
-
-    st.markdown("#### :blue[Roubo em coletivo]")
-
-    st.plotly_chart(roubo_col_ano, use_container_width=True)
-    st.markdown("""
-                Em 2025, o roubo em coletivo registrou um decréscimo em relação ao ano anterior de **40,6%**.
-                """)
-
-    st.markdown("#### :blue[Estelionato]")
-
-    st.plotly_chart(estelionato_ano, use_container_width=True)
-    st.markdown("""
-                O estelionato foi incluído neste relatório devido ao aumento identificado nos últimos anos.
+st.markdown("### :blue[Prisão em flagrante]")
+st.plotly_chart(apf_ano, use_container_width=True)
+st.markdown("""Em 2025, foram registradas **42.295** prisões em flagrante em todo o estado, representando uma diminuição de **0,2%** em relação ao ano anterior.
 >
-Em 2025 houve um aumento de **2,0%**, superando o ano anterior e somando o maior número de casos da série histórica.
-                """)
+Em 2020, o número de prisões diminuiu devido às restrições de mobilidade impostas pela pandemia. No entanto, nos últimos anos, observamos uma tendência de aumento que se manteve até 2024, período em que obteve o maior número de toda a série.
+            """)
 
-    st.markdown("#### :blue[Extorção]")
-
-    st.plotly_chart(extorcao_ano, use_container_width=True)
-    st.markdown("""
-                Em 2025, tivemos **3.646** registros de extorsão, **19,5%** a mais do que em 2024.
+st.markdown(
+    "### :blue[Auto de apreensão de adolescente por prática de ato infracional]")
+st.plotly_chart(aaapai_ano, use_container_width=True)
+st.markdown("""Desde 2013, observamos uma queda no número de autos de apreensão de adolescentes por prática de ato infracional.
+>
+Em 2025, houve registro de 5.232 casos, um **crescimento de 6,4%** no número de adolescentes apreendidos em relação ao ano anterior.
                 """)
