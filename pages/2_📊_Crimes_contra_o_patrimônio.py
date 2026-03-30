@@ -112,6 +112,12 @@ vlr_atual = (
 vlr_delta = ((((df_hs_compara.total_roubos.values[21])*1000)/365).round(
     0))-((((df_hs_compara.total_roubos.values[22])*1000)/365).round(0))
 
+# roubos por cisp
+df_roubo_un = (df_anuario.groupby(['risp_desc', 'cisp', 'unidade_territorial'])['total_roubos'].sum().reset_index()
+               ).sort_values(by='total_roubos', ascending=False).head(10)
+
+# Rank the 'Score' column in descending order
+df_roubo_un['Rank'] = df_roubo_un['total_roubos'].rank(ascending=False)
 
 ##############################################################################################
 # 📈 Contrução dos gráficos 📊
@@ -139,6 +145,31 @@ roubo_ano_var.update_yaxes(
     showticklabels=False, showgrid=False, visible=False, fixedrange=True)
 roubo_ano_var.update_xaxes(
     showgrid=False, visible=False, fixedrange=True, type="category", title=None)
+
+# por mes
+roubo_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['total_roubos'].sum().reset_index(),
+                    x='mes_char', y=['total_roubos'], markers=True, text='value',
+                    line_shape="spline", template="plotly_dark", title="Roubos por mês",
+                    color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                    labels=dict(mes_char="Mês", value="Roubos",
+                                variable="Roubos")
+                    )
+roubo_mes.update_xaxes(type="category", title=None)
+roubo_mes.update_layout(showlegend=False)
+roubo_mes.update_traces(line_width=2, textposition='top center')
+
+# roubo por CISP
+roubo_cisp = go.Figure(data=[go.Table(
+
+    header=dict(values=['Rank', 'RISP', 'Delagacia', 'Unidade Territorial', 'Total'],
+                fill_color='royalblue',
+                align='left'),
+    cells=dict(values=[df_roubo_un.Rank, df_roubo_un.risp_desc, df_roubo_un.cisp, df_roubo_un.unidade_territorial, df_roubo_un.total_roubos],
+               fill_color='lightskyblue',
+               align='center',
+               font=dict(color='darkslategray', size=11)
+               ))
+], layout=go.Layout(template="plotly_dark"))
 
 ##################################################################################
 ##################################################################################
@@ -203,4 +234,16 @@ with st.expander("Histórico por Ano", expanded=True):
     st.plotly_chart(roubo_ano, use_container_width=True)
     st.plotly_chart(roubo_ano_var, use_container_width=True)
     st.markdown("""O indicador de **Roubos** registrou, em 2025, 97.712 vítimas,  8.6% menor em relação ao ano anterior).
+                """)
+    st.plotly_chart(roubo_mes, use_container_width=True)
+    st.markdown("""
+                O mês com mais registros de ocorrências de roubos, foram Janeiro e Dezembro.
+                >
+                Sendo que de Novembro para Dezembro tivemos um aumento de 22%.
+                """)
+
+    st.markdown("#### :blue[Roubos por CISP e unidade territorial]")
+    st.plotly_chart(roubo_cisp, use_container_width=True)
+    st.markdown("""
+                A delegacia com mais registros de roubos no estado, é a 59 DP, que atende a região de Duque de Caxias.
                 """)
