@@ -230,6 +230,47 @@ roubo_rua_var.update_yaxes(
 roubo_rua_var.update_xaxes(
     showgrid=False, visible=False, fixedrange=True, type="category", title=None)
 
+# 4.4.5 Roubo a transeunte
+rtranseunte_ano = px.line(df_hist_anual.groupby('ano')[['roubo_transeunte']].apply(lambda x: x.sum()/1000).round(2).reset_index(),
+                          x='ano', y='roubo_transeunte',
+                          markers=True, text='roubo_transeunte', line_shape="spline", template="plotly_dark",
+                          title="Roubo a transeunte",
+                          height=525, width=850,  # altura #largura
+                          color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                          labels=dict(ano="Ano", roubo_transeunte="Roubos (k)")
+                          )
+rtranseunte_ano.update_layout(xaxis=dict(linecolor='rgba(0,0,0,1)', tickmode='array',
+                              tickvals=df_hist_anual['ano'], ticktext=df_hist_anual['ano']))
+rtranseunte_ano.add_annotation(x=2020, y=46.29, font=dict(
+    color="red", size=12), text="Covid-19", showarrow=True, arrowhead=2, ax=-50, ay=0)
+rtranseunte_ano.update_layout(showlegend=False)
+rtranseunte_ano.update_traces(line_width=2, textposition='top center')
+
+# 4.4.6 Roubo de celular
+roubo_celular_ano = px.line(df_hist_anual.groupby('ano')[['roubo_celular']].apply(lambda x: x.sum()/1000).round(2).reset_index(),
+                            x='ano', y='roubo_celular', markers=True, text='roubo_celular', line_shape="spline", template="plotly_dark",
+                            title="Roubo de celular", height=525, width=850,
+                            color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                            labels=dict(ano="Ano", roubo_celular="Roubos (k)")
+                            )
+roubo_celular_ano.update_layout(xaxis=dict(
+    linecolor='rgba(0,0,0,1)', tickmode='array', tickvals=df_hist_anual['ano'], ticktext=df_hist_anual['ano']))
+roubo_celular_ano.add_annotation(x=2020, y=16.44, font=dict(
+    color="red", size=12), text="Covid-19", showarrow=True, arrowhead=2, ax=-50, ay=0)
+roubo_celular_ano.update_layout(showlegend=False)
+roubo_celular_ano.update_traces(line_width=2, textposition='top center')
+
+# por mes
+roubo_celular_mes = px.line(df_anuario.groupby(['mes', 'mes_char'])['roubo_celular'].sum().reset_index(), x='mes_char', y=['roubo_celular'],
+                            markers=True, text='value', line_shape="spline", template="plotly_dark",
+                            title="Roubo de celular por mês",
+                            color_discrete_sequence=px.colors.sequential.Blackbody_r,
+                            labels=dict(mes_char="Mês",
+                                        value="Roubos", variable="Roubos")
+                            )
+roubo_celular_mes.update_xaxes(type="category", title=None)
+roubo_celular_mes.update_layout(showlegend=False)
+roubo_celular_mes.update_traces(line_width=2, textposition='top center')
 
 ##################################################################################
 ##################################################################################
@@ -339,4 +380,27 @@ with st.expander("Analises", expanded=True):
                 Em 2023, registrou-se o menor número de ocorrências desde 2004.
                 >
                 Já em 2025, apresentou um **decréscimo de 2,7%** em relação ao ano anterior.
+                """)
+
+    st.markdown("#### :blue[Roubo a transeunte]")
+
+    st.plotly_chart(rtranseunte_ano, use_container_width=True)
+
+    st.markdown("""
+                Em 2025, o roubo a transeunte registrou **queda de 10,6%** casos, mantendo a tendência observada nos últimos anos.
+                """)
+
+    st.markdown("#### :blue[Roubo de celular]")
+
+    st.plotly_chart(roubo_celular_ano, use_container_width=True)
+    st.markdown("""
+                Desde 2013, esse delito apresentava um crescimento constante, interrompido em 2020.
+                >
+                Ao final da pandemia, observamos uma queda nos números nos anos seguintes, mas, em 2024, os dados apresentaram nova crescente.
+                >
+                Em 2025, foram registrados **25.625** casos de **roubo de celular**, representando um aumento de **19,7%** em comparação com o ano anterior.
+                """)
+    st.plotly_chart(roubo_celular_mes, use_container_width=True)
+    st.markdown("""
+                No mês de março foram registrados **2469** roubo de celulares, pois nesse mês temos a celebração do carnaval no estado.
                 """)
