@@ -90,19 +90,11 @@ section[data-testid="stSidebar"] {
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_anuario.csv.bz2", sep='|', encoding="Latin 1")
+    return pd.read_csv("https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_regiao_cisp.csv", sep=',')
 
 
 # carrega dataset com as informacoes do anuario
-df_anuario = load_data()
-
-# carrega dataset com o historico anual dos principais indicadores
-df_hist_anual = pd.read_csv(
-    'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hist_anual.csv', sep=',')
-
-# carrega dataset com a comparacao ano a ano
-df_hs_compara = pd.read_csv(
-    'https://raw.githubusercontent.com/gabrielmprata/Info_seguranca_publica_rj/main/datasets/df_hs_compara.csv', sep=',')
+df_regiao_cisp = load_data()
 
 
 ##############################################################################################
@@ -112,16 +104,52 @@ df_hs_compara = pd.read_csv(
 # 4.6.1 Indicadores
 
 # Roubo de Rua
-fig = px.histogram(df_regiao_cisp, x="risp", y="roubo_rua", color='ano', barmode='group',
-                   labels=dict(risp="RISP", ano="Ano", roubo_rua="Roubos"),
-                   color_discrete_sequence=px.colors.sequential.Blues_r, text_auto='.3s',
-                   template="plotly_dark"
-                   )
-fig.update_xaxes(type="category", title=None)
-fig.update_traces(textfont_size=12, textangle=0,
-                  textposition="outside", cliponaxis=False)
-fig.update_layout(yaxis_title="Roubos")
-fig.update_layout(showlegend=True)
+ind_rua = px.histogram(df_regiao_cisp, x="risp", y="roubo_rua", color='ano', barmode='group',
+                       labels=dict(risp="RISP", ano="Ano", roubo_rua="Roubos"),
+                       color_discrete_sequence=px.colors.sequential.Blues_r, text_auto='.3s',
+                       template="plotly_dark"
+                       )
+ind_rua.update_xaxes(type="category", title=None)
+ind_rua.update_traces(textfont_size=12, textangle=0,
+                      textposition="outside", cliponaxis=False)
+ind_rua.update_layout(yaxis_title="Roubos")
+ind_rua.update_layout(showlegend=True)
+
+# Roubo de Veículo
+ind_veic = px.histogram(df_regiao_cisp, x="risp", y="roubo_veiculo", color='ano', barmode='group',
+                        labels=dict(risp="RISP", ano="Ano",
+                                    roubo_veiculo="Roubos"),
+                        color_discrete_sequence=px.colors.sequential.Blues_r, text_auto='.3s',
+                        template="plotly_dark"
+                        )
+ind_veic.update_xaxes(type="category", title=None)
+ind_veic.update_traces(textfont_size=12, textangle=0,
+                       textposition="outside", cliponaxis=False)
+ind_veic.update_layout(yaxis_title="Roubos", showlegend=True)
+
+# Roubo de Carga
+ind_carga = px.histogram(df_regiao_cisp, x="risp", y="roubo_carga", color='ano', barmode='group',
+                         labels=dict(risp="RISP", ano="Ano",
+                                     roubo_carga="Roubos"),
+                         color_discrete_sequence=px.colors.sequential.Blues_r, text_auto='.3s',
+                         template="plotly_dark"
+                         )
+ind_carga.update_xaxes(type="category", title=None)
+ind_carga.update_traces(textfont_size=12, textangle=0,
+                        textposition="outside", cliponaxis=False)
+ind_carga.update_layout(yaxis_title="Roubos", showlegend=True)
+
+# Letalidade Violenta
+ind_letal = px.histogram(df_regiao_cisp, x="risp", y="letalidade_violenta", color='ano', barmode='group',
+                         labels=dict(risp="RISP", ano="Ano",
+                                     letalidade_violenta="Casos"),
+                         color_discrete_sequence=px.colors.sequential.Blues_r, text_auto='.3s',
+                         template="plotly_dark"
+                         )
+ind_letal.update_xaxes(type="category", title=None)
+ind_letal.update_traces(textfont_size=12, textangle=0,
+                        textposition="outside", cliponaxis=False)
+ind_letal.update_layout(yaxis_title="Casos", showlegend=True)
 
 
 ##################################################################################
@@ -153,6 +181,39 @@ st.markdown("""
             """)
 st.markdown("### :blue[Indicadores na RISP]")
 st.markdown("#### :blue[Indicadores de **roubo de rua**]")
-# st.plotly_chart(apre_ano, use_container_width=True)
-# st.markdown("""As apreensões de drogas em 2025 tiveram um aumento de **7,9%** em relação ano anterior, mantendo a tendência de crescimento registrada nos últimos dois anos.
-#                """)
+st.plotly_chart(ind_rua, use_container_width=True)
+st.markdown("""
+                O indicador Roubo de Rua apresentou queda em seis das sete RISP: 1, 3, 4, 5, 6 e 7, em relação ao ano anterior.
+>
+ A maior redução foi observada na RISP 5, com 35,7% (148), enquanto a menor redução ocorreu na RISP 1, com 1,9% (20.734) dos roubos de rua em relação a 2024.
+ >
+  Já a RISP 2 apresentou um crescimento, foram 7,5% (17.495) casos.
+                """)
+
+st.markdown("#### :blue[Indicadores de **roubo de veículos**]")
+st.plotly_chart(ind_veic, use_container_width=True)
+st.markdown("""
+                Quatro das sete RISP do estado apresentaram queda nos casos de **Roubo de Veículo** em 2025, sendo as RISP 5 e 1 com as maiores reduções: **40,7% (54 casos no ano)** e **39,3% (4.951)**.
+>
+A menor redução foi observada na RISP 2, que diminuiu **4,1% (8.762)**.
+>
+As RISP 7, 6 e 4, por sua vez, tiveram aumento nos casos. Descatamos aqui a RISP 7 com **40,7% (38 casos)** e a RISP 6 com **32,8% (170 casos)**.
+                """)
+
+st.markdown("#### :blue[Indicadores de **roubo de carga**]")
+st.plotly_chart(ind_carga, use_container_width=True)
+st.markdown("""
+            As RISP 5 e 7 apresentaram as maiores quedas nos casos de Roubos de Carga.
+            >
+            Já a RISP 4 manteve-se estável, com o mesmo número de casos do ano anterior.
+                """)
+
+st.markdown("#### :blue[Indicadores de **Letalidade Violenta**]")
+st.plotly_chart(ind_letal, use_container_width=True)
+st.markdown("""
+            O indicador **Letalidade Violenta** apresentou redução em quatro das sete RISP do estado.
+>
+A maior redução em 2025, em relação ao ano anterior, foi observada na RISP 4, com **11,1% (515 no total).**
+>
+Em contrapartida, a RISP 1 mostrou um crescimento de **23,3% (546)** do número de casos em 2025.
+                """)
