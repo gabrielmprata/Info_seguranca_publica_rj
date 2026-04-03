@@ -59,3 +59,5 @@ Principais técnicas utilizadas:
 >
 # :chart_with_downwards_trend: Apresentação dos resultados
 >
+<br><br>
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://anuario-seguranca-publica.streamlit.app)
