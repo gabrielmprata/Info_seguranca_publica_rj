@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 alt.themes.enable("dark")
-
+st.sidebar.success("Selecione a categoria⬆️")
 
 #######################
 # CSS styling
