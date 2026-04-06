@@ -5,7 +5,11 @@ Dados Abertos do Instituto de segurança pública (ISP)
 
 <img src="http://img.shields.io/static/v1?label=vers%C3%A3o%20do%20projeto&message=v2.0.1&color=red&style=for-the-badge&logo=github"/>
 </p>
+<br><br>
 
+# 🖥️ Demo App
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://anuario-seguranca-publica.streamlit.app/)
 <br></br>
 # :radio_button: Objetivo 
 Criar um simples Dashboard em **Python** e **Streamlit**, para a visualização das informações de Segurança Pública do Estado do Rio de Janeiro.
